@@ -7,24 +7,55 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Protocol;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSession;
 
 
 @SpringBootApplication
 public class SpringjedisApplication implements CommandLineRunner {
 
-	@Autowired
-	JedisConnectionFactory jcf;
+	//@Autowired
+	//JedisConnectionFactory jcf;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringjedisApplication.class, args);
+
+
 	}
 
 	@Override
     public void run(String... args) {
-        System.out.println("Hello world");
+        /*System.out.println("Hello world");
 		Jedis  j = (Jedis)jcf.getConnection().getNativeConnection();
 		j.set("foo", "bar");
-		j.close();
+		j.close();*/
+
+		if (!(args.length ==  2 || args.length == 3)) {
+			System.out.println("Usage: host port password");
+			System.exit(1);
+		}
+
+
+		String host = args[0];
+		int port = Integer.parseInt(args[1]);
+		String password = null;
+		if (args.length == 3) password = args[2];
+		System.out.printf("%s %d %s \n", host, port, password);
+		JedisPoolConfig config = new JedisPoolConfig();
+
+		JedisPool pool = new JedisPool(config, host, port, Protocol.DEFAULT_TIMEOUT, password, true, null, null, null);
+		try (Jedis jedis = pool.getResource()) {
+			String resp = jedis.set("foo", "bar");
+			System.out.println("Set:" + resp);
+			System.out.println("Get: " + jedis.get("foo"));
+		}
+		//close the pool when application terminates
+		pool.close();
 	}
 
 }

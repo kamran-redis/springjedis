@@ -10,10 +10,10 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 @Configuration
 class RedisConfiguration {
 
-    @Bean
+   /* @Bean
     public JedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration("127.0.0.1", 6379);
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration("127.0.0.1", 6380);
         JedisClientConfiguration jconfig = JedisClientConfiguration.builder().useSsl().build();
         return new JedisConnectionFactory(config, jconfig);
-    }
+    }*/
 }
