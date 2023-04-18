@@ -1,41 +1,15 @@
 
-cd ~/Dev/Development3/repo/springjedis
+# Build 
+```
+mvn -DskipTests clean package
+```
 
-./mvnw -DskipTests clean package
-java -jar target/springjedis-0.0.1-SNAPSHOT.jar
+# Create trust store
+```
+keytool -import -noprompt -file ca.pem -alias ca_cert  -keystore ca.jks -storepass password
+```
 
-
-cd Dev/Development3/redis/redis-6.2.6
-./src/redis-cli --tls -p 6380  --cert ./tests/tls/client.crt  --key ./tests/tls/client.key --cacert ./tests/tls/ca.crt
-./src/redis-server --tls-port 6380 --port 0  --tls-cert-file ./tests/tls/server.crt --tls-key-file ./tests/tls/server.key  --tls-ca-cert-file ./tests/tls/ca.crt
-export DIR=~/Dev/Development3/redis/redis-6.2.6/tests/tls
-java -Djavax.net.ssl.keyStoreType=pkcs12 \
--Djavax.net.ssl.keyStore="${DIR}"/client.pfx \
--Djavax.net.ssl.keyStorePassword=password \
--Djavax.net.ssl.trustStoreType=jks \
--Djavax.net.ssl.trustStore="${DIR}"/ca.jks \
--Djavax.net.ssl.trustStorePassword=password \
--jar target/springjedis-0.0.1-SNAPSHOT.jar
-
-
-./src/redis-cli --insecure --tls -p 6380 monitor
-./src/redis-server --tls-port 6380 --port 0  --tls-cert-file ./tests/tls/server.crt --tls-key-file ./tests/tls/server.key --tls-auth-clients no 
-
-export DIR=~/Dev/Development3/redis/redis-6.2.6/tests/tls
-java -Djavax.net.ssl.trustStoreType=jks \
--Djavax.net.ssl.trustStore="${DIR}"/ca.jks \
--Djavax.net.ssl.trustStorePassword=password \
--jar target/springjedis-0.0.1-SNAPSHOT.jar
-
-
-
-cd Dev/Development3/redis/redis-6.2.6/tests/tls
-openssl pkcs12 -export -in client.crt  -inkey client.key -certfile ca.crt -passout pass:password -out client.pfx
-keytool -import -noprompt -file ca.crt -alias ca_cert  -keystore ca.jks -storepass password
-
-
-export DIR=~/Dev/Development3/redis/redis-6.2.6/tests/tls
-java -Djavax.net.ssl.trustStoreType=jks \
--Djavax.net.ssl.trustStore="${DIR}"/ca.jks \
--Djavax.net.ssl.trustStorePassword=password \
--cp target/springjedis-0.0.1-SNAPSHOT.jar com.redis.spring.springjedis.SimpleTLS 127.0.0.1 6379 
+# Test application
+```
+java  -Djavax.net.ssl.trustStoreType=jks -Djavax.net.ssl.trustStore=ca.jks  -Djavax.net.ssl.trustStorePassword=password -Djavax.net.debug=all -jar target/springjedis-0.0.1-SNAPSHOT.jar <IP> <PORT> <PASSWORD>
+```

@@ -1,26 +1,18 @@
 package com.redis.spring.springjedis;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSession;
 
 
 @SpringBootApplication
 public class SpringjedisApplication implements CommandLineRunner {
 
-	//@Autowired
-	//JedisConnectionFactory jcf;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringjedisApplication.class, args);
@@ -30,10 +22,7 @@ public class SpringjedisApplication implements CommandLineRunner {
 
 	@Override
     public void run(String... args) {
-        /*System.out.println("Hello world");
-		Jedis  j = (Jedis)jcf.getConnection().getNativeConnection();
-		j.set("foo", "bar");
-		j.close();*/
+		System.out.println("*********** Running Version 0.1 ***************");
 
 		if (!(args.length ==  2 || args.length == 3)) {
 			System.out.println("Usage: host port password");
