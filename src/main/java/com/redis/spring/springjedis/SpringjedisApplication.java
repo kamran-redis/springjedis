@@ -7,6 +7,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
+import javax.net.ssl.SSLParameters;
 
 
 
@@ -22,7 +23,7 @@ public class SpringjedisApplication implements CommandLineRunner {
 
 	@Override
     public void run(String... args) {
-		System.out.println("*********** Running Version 0.1 ***************");
+		System.out.println("*********** Running Version 0.2 ***************");
 
 		if (!(args.length ==  2 || args.length == 3)) {
 			System.out.println("Usage: host port password");
@@ -37,9 +38,12 @@ public class SpringjedisApplication implements CommandLineRunner {
 		System.out.printf("%s %d %s \n", host, port, password);
 		JedisPoolConfig config = new JedisPoolConfig();
 
-		JedisPool pool = new JedisPool(config, host, port, Protocol.DEFAULT_TIMEOUT, password, true, null, null, null);
+		SSLParameters params = new SSLParameters();
+        params.setEndpointIdentificationAlgorithm("HTTPS");
+
+        JedisPool pool = new JedisPool(config, host, port, Protocol.DEFAULT_TIMEOUT, password, Protocol.DEFAULT_DATABASE, true, null, params,null);
 		try (Jedis jedis = pool.getResource()) {
-			String resp = jedis.set("foo", "bar");
+			String resp = jedis.set("foo1", "bar");
 			System.out.println("Set:" + resp);
 			System.out.println("Get: " + jedis.get("foo"));
 		}
